@@ -2,14 +2,14 @@
 import random
 from flask import Flask, request
 from pymessenger.bot import Bot
+from credential import *
 import os
 
 app = Flask(__name__)
-ACCESS_TOKEN = 'EAAESHHaUabIBADcrZAhdigkIPkjZBNZAIrDEunBGC69Jpwv7trAjZBewYum0zl2X1GjTeRMAGsciA6oj9SKZAI3yvDj4rtaVxfcmZBgdXbwAvicHepeLfq9FWfznUZC3sSgIwnXLheaxu3zKEdxJePPDy75e4Vj6x76HZAzX8bcYqZCybfq7ob5L5'   #ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
-VERIFY_TOKEN = 'JAHIDTOEKN@'   #VERIFY_TOKEN = os.environ['VERIFY_TOKEN']
 bot = Bot (ACCESS_TOKEN)
 
 #We will receive messages that Facebook sends our bot at this endpoint
+sample_responses = ["asdasd", "szdfcsdf"]
 @app.route("/", methods=['GET', 'POST'])
 def receive_message():
     if request.method == 'GET':
@@ -27,13 +27,18 @@ def receive_message():
             if message.get('message'):
                 #Facebook Messenger ID for user so we know where to send response back to
                 recipient_id = message['sender']['id']
+
+                #print(message)
                 if message['message'].get('text'):
-                    response_sent_text = get_message(type='text')
+                    text_message = message['message']['text']
+                    response_sent_text = get_texts(texts=text_message)
                     send_message(recipient_id, response_sent_text)
                 #if user sends us a GIF, photo,video, or any other non-text item
-                if message['message'].get('attachments'):
-                    response_sent_nontext = get_message(type='attachments')
+                elif message['message'].get('attachments'):
+                    attachments_message = message['message']['attachments']
+                    response_sent_nontext = get_attachments(attachments = attachments_message)
                     send_message(recipient_id, response_sent_nontext)
+
     return "Message Processed"
 
 
@@ -47,16 +52,34 @@ def verify_fb_token(token_sent):
     #     return 'Invalid verification token'
 
 
-#chooses a random message to send to the user
-def get_message(type):
 
-    if type == 'text':
-        sample_responses = ["You are stunning!", "We're proud of you.", "Keep on being you!", "We're greatful to know you :)"]
-    elif type == 'attachments':
-        sample_responses = ["attachments stunning!", "attachments photo"]
+def get_texts(texts):
+
+    texts = texts.lower()
+    print(texts)
+    global sample_responses
+
+    if texts == 'hi':
+        sample_responses = ["Hi, Thanks for your message!"]
+    elif texts == 'how are you':
+        sample_responses = ["Fine! You?"]
 
     # return selected item to the user
     return random.choice(sample_responses)
+
+
+def get_attachments(attachments):
+
+    global sample_responses
+    attachments = attachments[0]
+    print(attachments)
+
+    sample_responses = ["attachments stunning!", "attachments photo"]
+
+    # return selected item to the user
+    return random.choice(sample_responses)
+
+
 
 #uses PyMessenger to send response to user
 def send_message(recipient_id, response):
