@@ -3,6 +3,7 @@ import random
 from flask import Flask, request
 from pymessenger.bot import Bot
 import os
+
 app = Flask(__name__)
 ACCESS_TOKEN = 'EAAESHHaUabIBADcrZAhdigkIPkjZBNZAIrDEunBGC69Jpwv7trAjZBewYum0zl2X1GjTeRMAGsciA6oj9SKZAI3yvDj4rtaVxfcmZBgdXbwAvicHepeLfq9FWfznUZC3sSgIwnXLheaxu3zKEdxJePPDy75e4Vj6x76HZAzX8bcYqZCybfq7ob5L5'   #ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
 VERIFY_TOKEN = 'JAHIDTOEKN@'   #VERIFY_TOKEN = os.environ['VERIFY_TOKEN']
@@ -52,8 +53,8 @@ def get_message(type):
     if type == 'text':
         sample_responses = ["You are stunning!", "We're proud of you.", "Keep on being you!", "We're greatful to know you :)"]
     elif type == 'attachments':
-        sample_responses = ["attachments stunning!", "attachments"]
-        
+        sample_responses = ["attachments stunning!", "attachments photo"]
+
     # return selected item to the user
     return random.choice(sample_responses)
 
@@ -65,4 +66,3 @@ def send_message(recipient_id, response):
 
 if __name__ == "__main__":
     app.run()
-
