@@ -4,6 +4,10 @@ from flask import Flask, request
 from pymessenger.bot import Bot
 from credential import *
 import os
+import webview
+from PIL import Image
+import requests
+from io import BytesIO
 
 app = Flask(__name__)
 bot = Bot (ACCESS_TOKEN)
@@ -72,7 +76,14 @@ def get_attachments(attachments):
 
     global sample_responses
     attachments = attachments[0]
-    print(attachments)
+    print(attachments['payload']['url'])
+    url = attachments['payload']['url']
+    #webview.create_window('Hello world', url)
+    #webview.start()
+
+    response = requests.get(url)
+    img = Image.open(BytesIO(response.content))
+    img.show()
 
     sample_responses = ["attachments stunning!", "attachments photo"]
 
